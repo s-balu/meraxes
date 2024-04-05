@@ -583,6 +583,9 @@ typedef struct galaxy_t
   double BlackHoleAccretedColdMass;
   double BlackHoleAccretingColdMass;
 
+  double ColdGas_pre; // this is too save the ColdGas reserviors before SF and SNe happens
+  double MetalsColdGas_pre;
+
   int Galaxy_Population; // You need it also if you are not disentangling PopIII/PopII (when Mini_halos is off, this is
                          // = 2)
 #if USE_MINI_HALOS

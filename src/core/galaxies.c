@@ -68,6 +68,9 @@ galaxy_t* new_galaxy(int snapshot, unsigned long halo_ID)
   gal->MergerBurstMass = 0.0;
   gal->MergerStartRadius = 0.0;
 
+  gal->ColdGas_pre = 0.0;
+  gal->MetalsColdGas_pre = 0.0;
+
 #if USE_MINI_HALOS
   gal->StellarMass_II = 0.;
   gal->StellarMass_III = 0.;

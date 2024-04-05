@@ -58,6 +58,9 @@ typedef struct galaxy_output_t
   float BlackHoleAccretedHotMass;
   float BlackHoleAccretedColdMass;
 
+  float ColdGas_pre;
+  float MetalsColdGas_pre;
+
   int Galaxy_Population; // You need it also if you are not disentangling PopIII/PopII (when Mini_halos is off, this is
                          // = 2)
 #if USE_MINI_HALOS
