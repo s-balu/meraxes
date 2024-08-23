@@ -243,7 +243,7 @@ ReionSMParam_c         : 2.0
 ReionSMParam_d         : 2.5
 
 ReionTcool             : 1.0e4  # Kelvin
-ReionNionPhotPerBary   : 6000 # Since the IMF has been updated for the UV luminosity.
+ReionNionPhotPerBary   : 4000 
 
 ReionSfrTimescale          : 0.5
 TsHeatingFilterType        : 1 
