@@ -33,6 +33,13 @@ UnitVelocity_in_cm_per_s : 100000            # WATCH OUT : km/s
 #----- Astrophysical parameters since Balu+22 ----
 #-------------------------------------------------
 
+FlagIgnoreProgIndex        : 1
+Flag_IncludePecVelsFor21cm : 2
+Flag_IncludeSpinTemp       : 1
+Flag_ComputePS             : 1
+Flag_Compute21cmBrightTemp : 1
+Flag_IncludeRecombinations : 1
+
 ReionNionPhotPerBary : 6000
 ReionGridDim : 1024
 
@@ -54,8 +61,7 @@ SnReheatScaling2          : 3.2
 SnReheatNorm              : 60.0
 SnReheatLimit             : 10000.0    # maximum allowed mass loading factor for SN feedback
 
-EscapeFracDependency : 5 # 0->none, 1->redshift, 2->stellar mass, 3->sfr, 4->cold gas surface density, 5->mvir, 6->ssfr
-EscapeFracNorm : 0.15
-EscapeFracPropScaling : 0.00
-EscapeFracRedshiftScaling : 0
-EscapeFracBHNorm : 0
+EscapeFracDependency      : 1  # 0->none, 1->redshift, 2->stellar mass, 3->sfr, 4->cold gas surface density, 5->mvir, 6->ssfr
+EscapeFracNorm            : 0.14
+EscapeFracRedshiftOffset  : 6.0
+EscapeFracRedshiftScaling : 0.2
