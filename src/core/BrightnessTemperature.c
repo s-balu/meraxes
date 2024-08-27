@@ -168,7 +168,7 @@ void ComputeBrightnessTemperatureBox(int snapshot) //
         for (kk = 0; kk < ReionGridDim; kk++) {
           i_padded = grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED);
 
-          vel[i_padded] = (float)(1. + redshift) * vel[i_padded]);
+          vel[i_padded] = (float)((1. + redshift) * vel[i_padded]);
 
           vel[i_padded] *= 1000. * 100. / MPC;
 
@@ -199,7 +199,7 @@ void ComputeBrightnessTemperatureBox(int snapshot) //
       vel_gradient[ii] *= run_globals.params.Hubble_h;
     }
 
-    velocity_gradient(vel_gradient, local_ix_start, ReionGridDim);
+    velocity_gradient(vel_gradient, local_nix, ReionGridDim);
 
     fftwf_execute(run_globals.reion_grids.vel_gradient_reverse_plan);
 
