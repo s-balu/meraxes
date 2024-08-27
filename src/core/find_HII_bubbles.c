@@ -65,7 +65,7 @@ void _find_HII_bubbles(const int snapshot)
   double density_over_mean;
   double weighted_sfr_density;
   double f_coll_stars;
-  double neutral_fraction;
+  double electron_fraction;
   double Gamma_R_prefactor;
 #if USE_MINI_HALOS
   const double ReionEfficiencyIII = run_globals.params.physics.ReionEfficiencyIII;
@@ -143,11 +143,9 @@ void _find_HII_bubbles(const int snapshot)
 
   // The free electron fraction from X-rays
   // TODO: Only necessary if we aren't using the GPU (not implemented there yet)
-  float* x_e_box = NULL;
   fftwf_complex* x_e_unfiltered = NULL;
   fftwf_complex* x_e_filtered = NULL;
   if (run_globals.params.Flag_IncludeSpinTemp) {
-    x_e_box = run_globals.reion_grids.x_e_box;
     x_e_unfiltered = run_globals.reion_grids.x_e_unfiltered;
     x_e_filtered = run_globals.reion_grids.x_e_filtered;
     fftwf_execute(run_globals.reion_grids.x_e_box_forward_plan);
@@ -366,9 +364,9 @@ void _find_HII_bubbles(const int snapshot)
 
           // Account for the partial ionisation of the cell from X-rays
           if (run_globals.params.Flag_IncludeSpinTemp) {
-            neutral_fraction = 1.0 - ((float*)x_e_filtered)[i_padded];
+            electron_fraction = 1.0 - ((float*)x_e_filtered)[i_padded];
           } else {
-            neutral_fraction = 1.0;
+            electron_fraction = 1.0;
           }
 
           if (flag_ReionUVBFlag) {
@@ -383,9 +381,9 @@ void _find_HII_bubbles(const int snapshot)
 
 #if USE_MINI_HALOS
           if ((f_coll_stars * ReionEfficiency + f_coll_starsIII * ReionEfficiencyIII) >
-              neutral_fraction * (1. + rec)) // IONISED!!!!
+              electron_fraction * (1. + rec)) // IONISED!!!!
 #else
-          if (f_coll_stars * ReionEfficiency > neutral_fraction * (1. + rec))
+          if (f_coll_stars * ReionEfficiency > electron_fraction * (1. + rec))
 #endif
           {
             // If it is the first crossing of the ionisation barrier for this cell (largest R), let's record J_21
@@ -418,9 +416,9 @@ void _find_HII_bubbles(const int snapshot)
           else if (flag_last_filter_step && (xH[i_real] > REL_TOL)) {
 #if USE_MINI_HALOS
             xH[i_real] =
-              (float)(neutral_fraction - (f_coll_stars * ReionEfficiency + f_coll_starsIII * ReionEfficiencyIII));
+              (float)(electron_fraction - (f_coll_stars * ReionEfficiency + f_coll_starsIII * ReionEfficiencyIII));
 #else
-            xH[i_real] = (float)(neutral_fraction - f_coll_stars * ReionEfficiency);
+            xH[i_real] = (float)(electron_fraction - f_coll_stars * ReionEfficiency);
 #endif
             if (xH[i_real] < 0.) {
               xH[i_real] = (float)0.;

@@ -1224,6 +1224,7 @@ int locate_xHII_index(float xHII_call)
 // ************************** IGM Evolution ***************************
 //  This function creates the d/dz' integrands
 // *********************************************************************
+#if USE_MINI_HALOS
 void evolveInt(float zp,
                float curr_delNL0,
                const double SFR_GAL[],
@@ -1237,6 +1238,17 @@ void evolveInt(float zp,
                int COMPUTE_Ts,
                const double y[],
                double deriv[])
+#else
+void evolveInt(float zp,
+               float curr_delNL0,
+               const double SFR_GAL[],
+               const double freq_int_heat_GAL[],
+               const double freq_int_ion_GAL[],
+               const double freq_int_lya_GAL[],
+               int COMPUTE_Ts,
+               const double y[],
+               double deriv[])
+#endif
 {
 
   double dadia_dzp, dadia_dzp_II, dcomp_dzp, dcomp_dzp_II, dxheat_dt_GAL, dxion_source_dt_GAL, dxion_sink_dt;
@@ -1428,7 +1440,7 @@ double dT_comp(double z, double TK, double xe)
   double Trad, ans;
 
   Trad = TCMB * (1.0 + z);
-  ans = (-1.51e-4) * (xe / (1.0 + xe)) / (hubble((float)z) / (HUBBLE * run_globals.params.Hubble_h)) /
+  ans = (-1.51e-4) * (xe / (1.0 + xe + f_He)) / (hubble((float)z) / (HUBBLE * run_globals.params.Hubble_h)) /
         run_globals.params.Hubble_h * pow(Trad, 4.0) / (1.0 + z);
   ans *= Trad - TK;
   return ans;
