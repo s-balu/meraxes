@@ -310,7 +310,7 @@ void call_ComputeTs(int snapshot, int nout_gals, timer_info* timer)
   // Read in the dark matter density grid
   read_grid(DENSITY, snapshot, grids->deltax);
 
-  // read in the velocity grids (only works for GBPTREES_TREES at the moment)
+  // read in the velocity grids
   if (run_globals.params.Flag_IncludePecVelsFor21cm > 0) {
     read_grid(run_globals.params.TsVelocityComponent, snapshot, grids->vel);
   }

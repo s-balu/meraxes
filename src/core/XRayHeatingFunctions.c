@@ -30,7 +30,6 @@
 #include "XRayHeatingFunctions.h"
 
 static double *sigma_atR, *sigma_Tmin, *ST_over_PS;
-static int NO_LIGHT;
 
 static float x_int_Energy[x_int_NENERGY];
 static float x_int_fheat[x_int_NXHII][x_int_NENERGY];
@@ -1286,7 +1285,7 @@ void evolveInt(float zp,
   dstarlyLW_dt_III = 0;
 #endif
 
-  if (!NO_LIGHT) {
+  if (!COMPUTE_TS) {
     for (zpp_ct = 0; zpp_ct < run_globals.params.TsNumFilterSteps; zpp_ct++) {
       // Define last redshift that is effective, zpp_edge is defined in init_heat!
       // set redshift of half annulus; dz'' is negative since we flipped limits of integral
@@ -1356,7 +1355,7 @@ void evolveInt(float zp,
     }
 #endif
 
-  } // end NO_LIGHT if statement YOU CAN SAVE SOME MORE OUTPUTS BUT FOR THE MOMENT THIS SHOULD BE FINE!
+  } // end COMPUTE_Ts if statement YOU CAN SAVE SOME MORE OUTPUTS BUT FOR THE MOMENT THIS SHOULD BE FINE!
 
   // **** Now we can solve the evolution equations  ***** //
   // *** First let's do dxe_dzp *** //
