@@ -1285,7 +1285,7 @@ void evolveInt(float zp,
   dstarlyLW_dt_III = 0;
 #endif
 
-  if (!COMPUTE_TS) {
+  if (!COMPUTE_Ts) {
     for (zpp_ct = 0; zpp_ct < run_globals.params.TsNumFilterSteps; zpp_ct++) {
       // Define last redshift that is effective, zpp_edge is defined in init_heat!
       // set redshift of half annulus; dz'' is negative since we flipped limits of integral
