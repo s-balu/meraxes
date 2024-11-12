@@ -276,7 +276,7 @@ void init_templates_mini(mag_params_t* miniSpectra,
     init_templates_special(spectra + iS, tBC, 1);
 #if USE_MINI_HALOS
     init_templates_rawIII(spectraIII + iS, fNameIII);
-    init_filters(spectraIII + iS, betaBands, nBeta, restBands, nRest, jwst_transmission_splined, jwst_lambda_splined, jwst_number, 1, redshifts[nAgeStep]);
+    init_filters(spectraIII + iS, betaBands, nBeta, restBands, nRest, jwst_transmission_splined, jwst_lambda_splined, jwst_number, N_JWST, redshifts[nAgeStep]);
     spectraIII[iS].nAgeStep = nAgeStep;
     ageStepIII = (double*)malloc(nAgeStep * sizeof(double));
     if ((bool)run_globals.params.physics.InstantSfIII) {
@@ -332,9 +332,9 @@ void init_templates_mini(mag_params_t* miniSpectra,
 
   totalSize *= nMaxZ * MAGS_N_BANDS;
   // Compute size of special templates
-  totalSize += 2 * MAGS_N_SNAPS * nMaxZ * MAGS_N_BANDS * N_JWST;
+  totalSize += 2 * MAGS_N_SNAPS * nMaxZ * MAGS_N_BANDS;
   //  Compute size of wavelengths
-  totalSize += 2 * MAGS_N_BANDS * N_JWST;
+  totalSize += 2 * MAGS_N_BANDS;
   totalSize *= sizeof(double);
   //
   working = (double*)malloc(totalSize);
