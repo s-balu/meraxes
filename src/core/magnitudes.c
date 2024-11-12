@@ -217,7 +217,7 @@ void init_templates_mini(mag_params_t* miniSpectra,
 
     n_splined = 0;
     for (iband=0; iband<N_JWST; iband++){
-        jwst_number = spectra[iS].nWaves;
+        jwst_number[iband] = spectra[iS].nWaves;
         n_splined+=jwst_number[iband];
     }
 
@@ -237,7 +237,7 @@ void init_templates_mini(mag_params_t* miniSpectra,
                 jwst_transmission_splined[iwave+iwave_offset] = 0;
             else{
                 jwst_transmission_splined[iwave+iwave_offset] = gsl_spline_eval(spline[iband], jwst_lambda_splined[iwave+iwave_offset], acc[iband]);
-                //mlog("iband=%d; iwave = %d: spectra.waves=%.1f, jwst_lambda_splined=%.1f, jwst_transmission_splined=%.6f",MLOG_MESG,iband, iwave, spectra[iS].waves[iwave+iwave_offset], jwst_lambda_splined[iwave+iwave_offset], jwst_transmission_splined[iwave+iwave_offset]);
+                //mlog("iband=%d; iwave = %d: spectra.waves=%.1f, jwst_lambda_splined=%.1f, jwst_transmission_splined=%.6f",MLOG_MESG,iband, iwave, spectra[iS].waves[iwave], jwst_lambda_splined[iwave+iwave_offset], jwst_transmission_splined[iwave+iwave_offset]);
             }
         }
         iwave_offset += jwst_number[iband];
@@ -246,7 +246,7 @@ void init_templates_mini(mag_params_t* miniSpectra,
     // Initialise filters
     init_filters(spectra + iS, betaBands, nBeta, restBands, nRest, jwst_transmission_splined, jwst_lambda_splined, jwst_number, N_JWST, redshifts[nAgeStep]);
     for (iwave=0; iwave<MAGS_N_BANDS; iwave++){
-      //  mlog("iwave = %d: spectra.centreWave=%.1f",MLOG_MESG, iwave, spectra[iS].centreWaves[iwave]);
+        //mlog("iwave = %d: spectra.centreWave=%.1f",MLOG_MESG, iwave, spectra[iS].centreWaves[iwave]);
         miniSpectra->allcentreWaves[iS][iwave] = spectra[iS].centreWaves[iwave];
     }
     if (spectra[iS].nFlux != MAGS_N_BANDS) {
@@ -525,7 +525,7 @@ void init_magnitudes(void)
       mlog_error("Number of beta and rest-frame filters do not match MAGS_N_BANDS!", MLOG_MESG);
       ABORT(EXIT_FAILURE);
     }
-    mlog("#***********************************************************", MLOG_MESG);
+    mlog("#***********************************************************\n\n", MLOG_MESG);
 
     // Initialise SED templates
     memcpy(str, params->PhotometricTablesDir, sizeof(str));
