@@ -712,7 +712,7 @@ void get_output_magnitudes(float* mags, float* dusty_mags, galaxy_t* gal, int sn
     memcpy(local_OutBCFlux, pOutBCFlux, sizeof(local_OutBCFlux));
 
     dust_absorption_approx(
-      local_InBCFlux, local_OutBCFlux, run_globals.mag_params.centreWaves, MAGS_N_BANDS, &dust_params);
+      local_InBCFlux, local_OutBCFlux, run_globals.mag_params.allcentreWaves[iS], MAGS_N_BANDS, &dust_params);
 
     for (int i_band = 0; i_band < MAGS_N_BANDS; ++i_band) {
       dusty_mags[i_band] = (float)(-2.5 * log10(local_InBCFlux[i_band] + local_OutBCFlux[i_band]) + 8.9 + sfr_unit);
