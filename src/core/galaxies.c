@@ -349,6 +349,9 @@ void kill_galaxy(galaxy_t* gal, galaxy_t* prev_gal, int* NGal, int* kill_counter
   }
 
   // Finally deallocated the galaxy and decrement any necessary counters
+#ifdef CALC_MAGS
+  free_luminosities(gal);
+#endif
   free(gal);
   *NGal = *NGal - 1;
   *kill_counter = *kill_counter + 1;

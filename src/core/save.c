@@ -141,7 +141,7 @@ void calc_hdf5_props()
 
 #ifdef CALC_MAGS
     h5props->n_props += 2;
-    h5props->array_nmag_f_tid = H5Tarray_create(H5T_NATIVE_FLOAT, 1, (hsize_t[]){ MAGS_N_BANDS });
+    h5props->array_nmag_f_tid = H5Tarray_create(H5T_NATIVE_FLOAT, 1, (hsize_t[]){ run_globals.MAGS_N_BANDS });
 #if USE_MINI_HALOS
     h5props->n_props += 1;
 #endif
@@ -965,7 +965,7 @@ void create_master_file()
   mlog(" ...done", MLOG_CLOSE | MLOG_TIMERSTOP);
 }
 
-static void inline save_walk_indices(hid_t file_id,
+static inline void save_walk_indices(hid_t file_id,
                                      int i_out,
                                      int prev_i_out,
                                      int* descendant_index,
@@ -1225,6 +1225,16 @@ void write_snapshot(int n_write, int i_out, int* last_n_write)
   gal_count = 0;
   gal = run_globals.FirstGal;
   output_buffer = calloc((int)chunk_size, sizeof(galaxy_output_t));
+#ifdef CALC_MAGS
+  for (int buffer_count=0; buffer_count<(int)chunk_size; buffer_count++){
+      output_buffer[buffer_count].Mags = (float*)malloc(run_globals.MAGS_N_BANDS*sizeof(float));
+      output_buffer[buffer_count].DustyMags = (float*)malloc(run_globals.MAGS_N_BANDS*sizeof(float));
+#if USE_MINI_HALOS
+      output_buffer[buffer_count].MagsIII = (float*)malloc(run_globals.MAGS_N_BANDS*sizeof(float));
+#endif
+  }
+#endif
+
   int buffer_count = 0;
   while (gal != NULL) {
     // Don't output galaxies which merged at this timestep
@@ -1267,6 +1277,15 @@ void write_snapshot(int n_write, int i_out, int* last_n_write)
   }
 
   // Free the output buffer
+#ifdef CALC_MAGS
+  for (buffer_count=0; buffer_count<(int)chunk_size; buffer_count++){
+      free(output_buffer[buffer_count].Mags);
+      free(output_buffer[buffer_count].DustyMags);
+#if USE_MINI_HALOS
+      free(output_buffer[buffer_count].MagsIII);
+#endif
+  }
+#endif
   free(output_buffer);
 
   if (run_globals.params.Flag_PatchyReion && check_if_reionization_ongoing(run_globals.ListOutputSnaps[i_out]) &&

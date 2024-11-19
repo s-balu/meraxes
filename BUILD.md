@@ -91,9 +91,6 @@ CALC_MAGS
 SECTOR_ROOT
 : Path to the sector repo. Default is `src/sector`. This is only used if `CALC_MAGS=ON`.
 
-MAGS_N_BANDS
-: Number of bands to calculate magnitudes for. Only applicable if `CALC_MAGS=ON`. Default is 6.
-
 MAGS_N_SNAPS
 : Number of snapshots to calculate magnitudes for. Only applicable if `CALC_MAGS=ON`. Default is 3.
 

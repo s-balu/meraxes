@@ -530,11 +530,11 @@ typedef struct galaxy_t
   double NewMetals[N_HISTORY_SNAPS];
 
 #ifdef CALC_MAGS
-  double inBCFlux[MAGS_N];
-  double outBCFlux[MAGS_N];
+  double *inBCFlux;
+  double *outBCFlux;
 #if USE_MINI_HALOS
-  double inBCFluxIII[MAGS_N];
-  double outBCFluxIII[MAGS_N];
+  double *inBCFluxIII;
+  double *outBCFluxIII;
 #endif
 #endif
 
@@ -725,7 +725,7 @@ typedef struct mag_params_t
   double* inBC;
   double* outBC;
   double* centreWaves;
-  double allcentreWaves[MAGS_N_SNAPS][MAGS_N_BANDS];
+  double *allcentreWaves[MAGS_N_SNAPS];
   double* logWaves;
 #ifdef USE_MINI_HALOS
   size_t totalSizeIII;
@@ -786,6 +786,7 @@ typedef struct run_globals_t
   float* Time_Values;
 
 #ifdef CALC_MAGS
+  int MAGS_N_BANDS;
   struct mag_params_t mag_params;
 #endif
 
