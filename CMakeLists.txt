@@ -51,7 +51,7 @@ endif()
 # build options #
 #################
 
-set(N_HISTORY_SNAPS 5 CACHE STRING "Number of snapshots for delayed SN feedback")
+set(N_HISTORY_SNAPS 17 CACHE STRING "Number of snapshots for delayed SN feedback")
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared library version (required for Mhysa)")
 option(CALC_MAGS "Calculate magnitude" OFF)
 set(MAGS_N_SNAPS 12 CACHE STRING "Number of snapshots to compute magnitudes")

@@ -697,7 +697,6 @@ void get_output_magnitudesIII(float* mags, galaxy_t* gal, int snapshot)
   int* targetSnap = run_globals.mag_params.targetSnap;
   double* pInBCFlux = gal->inBCFluxIII;
   double* pOutBCFlux = gal->outBCFluxIII;
-  int MAGS_N_BANDS = MAGS_N_BANDS;
 
   for (iS = 0; iS < MAGS_N_SNAPS; ++iS) {
     if (snapshot == targetSnap[iS])
@@ -733,7 +732,6 @@ void get_output_magnitudes(float* mags, float* dusty_mags, galaxy_t* gal, int sn
   int* targetSnap = run_globals.mag_params.targetSnap;
   double* pInBCFlux = gal->inBCFlux;
   double* pOutBCFlux = gal->outBCFlux;
-  int MAGS_N_BANDS = MAGS_N_BANDS;
 
   for (iS = 0; iS < MAGS_N_SNAPS; ++iS) {
     if (snapshot == targetSnap[iS])
