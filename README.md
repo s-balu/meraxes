@@ -18,7 +18,7 @@ Please refer to [`BUILD.md`](./BUILD.md) for detailed installation and build ins
 Comprehensive documentation is currently under development. For inquiries or assistance, please contact the team.  
 
 
-## **Citing Meraxes**
+## **Acknowledging**
 If you use Meraxes or its outputs in your research, please cite the following foundational paper:  
 
 - Mutch et al. (2016). **Dark-ages reionization and galaxy formation simulation - III. Modelling galaxy formation and the epoch of reionization.**  *Monthly Notices of the Royal Astronomical Society*, 462 (1): 250–276. [DOI: 10.1093/mnras/stw1506](https://doi.org/10.1093/mnras/stw1506).  
