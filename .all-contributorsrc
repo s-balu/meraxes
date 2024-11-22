@@ -26,6 +26,61 @@
         "maintenance",
         "review"
       ]
+    },
+    {
+      "login": "EMventura",
+      "name": "Emanuele Maria Ventura",
+      "avatar_url": "https://avatars.githubusercontent.com/u/98299102?v=4",
+      "profile": "https://github.com/EMventura",
+      "contributions": [
+        "code",
+        "review"
+      ]
+    },
+    {
+      "login": "BradGreig",
+      "name": "BradGreig",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16087482?v=4",
+      "profile": "https://github.com/BradGreig",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gbpoole",
+      "name": "Gregory B. Poole",
+      "avatar_url": "https://avatars.githubusercontent.com/u/599836?v=4",
+      "profile": "http://www.astronomy.swin.edu.au/~gpoole/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "pgeil",
+      "name": "pgeil",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13758421?v=4",
+      "profile": "https://github.com/pgeil",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "yqiuu",
+      "name": "Yisheng Qiu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26683739?v=4",
+      "profile": "https://github.com/yqiuu",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "daviesje",
+      "name": "daviesje",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36873665?v=4",
+      "profile": "https://github.com/daviesje",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
