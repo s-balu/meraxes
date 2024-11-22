@@ -109,7 +109,7 @@ target_link_libraries(meraxes PRIVATE meraxes_lib)
 target_compile_definitions(meraxes_lib PUBLIC
     N_HISTORY_SNAPS=${N_HISTORY_SNAPS}
     MAGS_N_SNAPS=${MAGS_N_SNAPS}
-	MAGS_N_BANDS=${MAGS_N_BANDS}
+    MAGS_N_BANDS=${MAGS_N_BANDS}
     $<$<BOOL:GDB>:GDB>
     $<$<CONFIG:Debug>:DEBUG>
     )
@@ -204,7 +204,7 @@ target_link_libraries(meraxes_lib PUBLIC MPI::MPI_C)
 
 # MINI_HALOS
 if(USE_MINI_HALOS)
-	add_definitions(-DUSE_MINI_HALOS)
+    add_definitions(-DUSE_MINI_HALOS)
 endif()
 
 # MAGNITUDES
@@ -233,11 +233,11 @@ if(CALC_MAGS)
 endif()
 
 if(USE_JWST)
-	add_definitions(-DUSE_JWST)
+    add_definitions(-DUSE_JWST)
 endif()
 
 if(USE_HST)
-	add_definitions(-DUSE_HST)
+    add_definitions(-DUSE_HST)
 endif()
 
 # MLOG

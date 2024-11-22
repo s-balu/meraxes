@@ -1267,15 +1267,6 @@ void write_snapshot(int n_write, int i_out, int* last_n_write)
   }
 
   // Free the output buffer
-#ifdef CALC_MAGS
-  for (buffer_count=0; buffer_count<(int)chunk_size; buffer_count++){
-      free(output_buffer[buffer_count].Mags);
-      free(output_buffer[buffer_count].DustyMags);
-#if USE_MINI_HALOS
-      free(output_buffer[buffer_count].MagsIII);
-#endif
-  }
-#endif
   free(output_buffer);
 
   if (run_globals.params.Flag_PatchyReion && check_if_reionization_ongoing(run_globals.ListOutputSnaps[i_out]) &&

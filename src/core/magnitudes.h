@@ -19,7 +19,6 @@ extern "C"
 #endif
 
   void init_luminosities(struct galaxy_t* gal);
-  void free_luminosities(struct galaxy_t* gal);
   void add_luminosities(mag_params_t* miniSpectra,
                         struct galaxy_t* gal,
                         int snapshot,
