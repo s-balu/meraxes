@@ -1,17 +1,10 @@
 # **Meraxes**
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit) [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](https://github.com/meraxes-devs/meraxes/graphs/contributors)  
 
-<figure>
-  <img src="https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/mnras/526/1/10.1093_mnras_stad2448/1/m_stad2448fig2.jpeg?Expires=1734589748&Signature=P0bapPBEJaZqeETwWL7Uo0ES7VDOEov1--cFCO2oGhwVQRCWz8RRnDA9~42DViUVMoAQJChkkFX5AwgxY6oQVq7AY8MZjrls4LAdOR-EjVZixnhufCh5-fo11-M4MOONglvOZNeuu2GydKswOzgc6qqGyJb0u3eHNjnfVcAiefDZtR5bPp6ZFDycBtW9nYr05HPL5NSUP4RUnMFqOLX5aNDIPyNBktNGuxbmrf~Id1HOsIz07NgQqBHRZDZ383GUe-kFWX1ydFjcpF1X--7ZBdjZh-zUYamRS6pJGCxDwOXT7dOhlV8uxiRcSKd4W2enzXzEFu-gG6yRUBtztF3TVw__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA" style="width: 100%; height: auto;" alt="Galaxy UV luminosity function"/>
-  <figcaption>Galaxy UV non-ionizing luminosity functions from z = 20 to 5 predicted by our fiducial model.</figcaption>
-</figure>
-
-
-<figure>
-  <img src="https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/mnras/520/3/10.1093_mnras_stad281/1/m_stad281fig7.jpeg?Expires=1735221664&Signature=eCtJmKVKts0UGgNKMm75Sx6VqgFkY14abE7ifwWCCBTa~VAgvstvcH03-AiMgalY4GzQXJVY8tckN47TZTJY9iFMZnEoT1oZKg3rgUKQUSJoYhEs1U8p8BLRk9MypDzUegeYBvMCIU7dnvGFE2NbwABahHCJWrhiYEAlpQ-ICd-zP~h7dgMs1DGnX3N~NB-bUlZd5A4RM1Q7Ep3LjRydM719MQG3mU0OsirPHJSDvAtsTpg-9Pg-4VW-QnnapyA2slCmYklv9KHwkIgBcLJTCVbL2gpuOBGD7FdfZa1~9xbdqK~9Xakhv~fkAL-QG-IyA--RMJbs8vVFuya0bS71aw__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA" style="width: 100%; height: auto;" alt="Galaxy UV luminosity function"/>
-  <figcaption>The light-cone evolution of the 21-cm brightness temperature from our simulations.</figcaption>
-</figure>
-
+![Galaxy UV luminosity function](output/results/figs/glfs.jpg)
+---
+![21-cm brightness temperature lightcones ](output/results/figs/lcs.jpg)
+---
 
 
 Meraxes is a **semi-analytic galaxy formation model** designed to study the interplay between high-redshift galaxies and their intergalactic medium (IGM) during the Epoch of Reionization (EoR). It  evaluates galaxy properties (e.g., stellar mass, star formation rate, UV luminosity in rest frame or through observational filters such as HST, JWST or other user-defined ones) from dark matter halo merger trees. It computes the photon budget including UV and X-ray, integrating with a customized version of [``21cmFAST``](https://github.com/21cmfast/21cmFAST) to simulate the ionization state and 21-cm signals of the IGM during the EoR.  
