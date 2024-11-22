@@ -1,78 +1,56 @@
-Meraxes
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-=======
+# **Meraxes**
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)  
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)  
 
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+Meraxes is a **semi-analytic galaxy formation model** designed to study the interplay between high-redshift galaxies and their intergalactic medium (IGM) during the Epoch of Reionization (EoR).  
 
-The Meraxes semi-analytic galaxy formation model.
+## **Overview**
+Meraxes evaluates galaxy properties (e.g., stellar mass, star formation rate, UV luminosity in rest frame or through observational filters such as HST, JWST or other user-defined ones) from dark matter halo merger trees. It computes the photon budget from UV to X-ray, integrating with a customized version of [``21cmFAST``](https://github.com/21cmfast/21cmFAST) to simulate the ionization state and 21-cm signals of the IGM during the EoR.  
 
-> [!TIP]
-> See `BUILD.md` for detailed build instructions.
+A full list of publications directly using Meraxes is available on [ADS](https://ui.adsabs.harvard.edu/public-libraries/CWUcYnt3TsmG6BuOKjR0Fw).  
 
+## **Complementary Tools**
+- **[DRAGONS](https://github.com/meraxes-devs/dragons):** A Python package for reading and processing Meraxes output.  
+- **[Sector](https://github.com/meraxes-devs/sector):** A library for computing spectral energy distributions from Meraxes simulations.  
 
-Attribution
------------
+---
 
-If you use this code or its results in any publications, please cite [Mutch et al. 2016b](http://adsabs.harvard.edu/abs/2016MNRAS.462..250M) (MNRAS, 462, 250):
+## **Installation**
+Please refer to [`BUILD.md`](./BUILD.md) for detailed installation and build instructions.
 
-```
-@ARTICLE{2016MNRAS.462..250M,
-   author = {{Mutch}, S.~J. and {Geil}, P.~M. and {Poole}, G.~B. and {Angel}, P.~W. and 
-	{Duffy}, A.~R. and {Mesinger}, A. and {Wyithe}, J.~S.~B.},
-    title = "{Dark-ages reionization and galaxy formation simulation - III. Modelling galaxy formation and the epoch of reionization}",
-  journal = {\mnras},
-archivePrefix = "arXiv",
-   eprint = {1512.00562},
- keywords = {galaxies: formation, galaxies: high redshift, dark ages, reionization, first stars},
-     year = 2016,
-    month = oct,
-   volume = 462,
-    pages = {250-276},
-      doi = {10.1093/mnras/stw1506},
-   adsurl = {http://adsabs.harvard.edu/abs/2016MNRAS.462..250M},
-  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
-}
-```
+---
 
-If you use any of the following features, please also cite the relevant papers:
+## **Documentation**
+Comprehensive documentation is currently under development. For inquiries or assistance, please contact the team.  
 
-AGN model
-: [Qin et al. 2017 (arXiv:1703.04895)](https://ui.adsabs.harvard.edu/#abs/2017arXiv170304895Q/abstract)
+---
 
-Minihalo model
-: [Ventura et al. 2024 (arXiv:2401.07396)](https://ui.adsabs.harvard.edu/abs/2024MNRAS.529..628V/abstract)
+## **Citing Meraxes**
+If you use Meraxes or its outputs in your research, please cite the following foundational paper:  
 
-Contributors
-------------
+> Mutch et al. (2016). **Dark-ages reionization and galaxy formation simulation - III. Modelling galaxy formation and the epoch of reionization.**  
+> *Monthly Notices of the Royal Astronomical Society*, 462 (1): 250–276. [DOI: 10.1093/mnras/stw1506](https://doi.org/10.1093/mnras/stw1506).  
 
-* **Simon Mutch** (Lead author; *The University of Melbourne*)
-* Paul Geil (*The University of Melbourne*)
-* Yuxiang Qin (*The University of Melbourne*)
-* Hansik Kim (*The University of Melbourne*)
-* Greg Poole (*Astronomy Data and Compute Services*)
-* Yisheng Qiu (*The University of Melbourne*)
-* Brad Greig (*The University of Melbourne*)
-* Emanuele Maria Ventura (*The University of Melbourne*)
+### Feature-Specific Citations
+If using specific features introduced in Meraxes, please cite the corresponding papers:  
 
+- **AGN Model:**  
+  > Qin et al. (2017). *Dark-ages reionization and galaxy formation simulation - X. The small contribution of quasars to reionization.*  
+  > *Monthly Notices of the Royal Astronomical Society*, 472 (2): 2009–2027. [DOI: 10.1093/mnras/stx1909](https://doi.org/10.1093/mnras/stx1909).  
 
-How to contribute
-=================
+- **21-cm Model:**  
+  > Balu et al. (2013). *Thermal and reionization history within a large-volume semi-analytic galaxy formation simulation.*  
+  > *Monthly Notices of the Royal Astronomical Society*, 520 (3): 3368–3382. [DOI: 10.1093/mnras/stad281](https://doi.org/10.1093/mnras/stad281).  
 
-1. Fork the [official repository](https://github.com/smutch/meraxes).
-2. Make your changes in a new, appropriately named branch (e.g. `mutch_starformation` or `fix_progenitor_order`).
-    * All git commit messages should loosely follow the [standard format outlined here](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
-    * Ensure your new code is commented enough so that others can understand what it's doing.
-3. Issue a [pull request](https://help.github.com/en/articles/about-pull-requests) to the official repository.
+- **Minihalo Model:**  
+  > Ventura et al. (2024). *Semi-analytic modelling of Pop. III star formation and metallicity evolution - I. Impact on the UV luminosity functions at z = 9–16.*  
+  > *Monthly Notices of the Royal Astronomical Society*, 529 (1): 628–646. [DOI: 10.1093/mnras/stae567](https://doi.org/10.1093/mnras/stae567).  
 
-## Contributors ✨
+---
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+## **Contributors**
+We appreciate contributions from the following individuals:  
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
 <table>
   <tbody>
     <tr>
@@ -81,10 +59,3 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
   </tbody>
 </table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
