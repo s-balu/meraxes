@@ -11,10 +11,10 @@ typedef struct galaxy_output_t
   unsigned long ID;
 
 #ifdef CALC_MAGS
-  float *Mags;
-  float *DustyMags;
+  float Mags[MAGS_N_BANDS];
+  float DustyMags[MAGS_N_BANDS];
 #if USE_MINI_HALOS
-  float *MagsIII;
+  float MagsIII[MAGS_N_BANDS];
 #endif
 #endif
 

@@ -14,16 +14,11 @@
 void init_luminosities(galaxy_t* gal)
 {
   // Initialise all elements of flux arrays to TOL.
-  int MAGS_N = MAGS_N_SNAPS* run_globals.MAGS_N_BANDS;
   double* inBCFlux = gal->inBCFlux;
   double* outBCFlux = gal->outBCFlux;
-  inBCFlux = (double*)malloc(MAGS_N*sizeof(double));
-  outBCFlux = (double*)malloc(MAGS_N*sizeof(double));
 #if USE_MINI_HALOS
   double* inBCFluxIII = gal->inBCFluxIII;
   double* outBCFluxIII = gal->outBCFluxIII;
-  inBCFluxIII = (double*)malloc(MAGS_N*sizeof(double));
-  outBCFluxIII = (double*)malloc(MAGS_N*sizeof(double));
 #endif
 
   for (int iSF = 0; iSF < MAGS_N; ++iSF) {
@@ -34,17 +29,6 @@ void init_luminosities(galaxy_t* gal)
     outBCFluxIII[iSF] = TOL;
 #endif
   }
-}
-
-void free_luminosities(galaxy_t* gal)
-{
-  // Initialise all elements of flux arrays to TOL.
-  free(gal->inBCFlux);
-  free(gal->outBCFlux);
-#if USE_MINI_HALOS
-  free(gal->inBCFluxIII);
-  free(gal->outBCFluxIII);
-#endif
 }
 
 void add_luminosities(mag_params_t* miniSpectra,
@@ -65,7 +49,6 @@ void add_luminosities(mag_params_t* miniSpectra,
   else if (Z > miniSpectra->maxZ)
     Z = miniSpectra->maxZ;
 
-  int MAGS_N_BANDS = run_globals.MAGS_N_BANDS;
   // Add luminosities
   int iA, iF, iS, iAgeBC;
   int offset;
@@ -136,7 +119,6 @@ void add_luminosities(mag_params_t* miniSpectra,
 void merge_luminosities(galaxy_t* target, galaxy_t* gal)
 {
   // Sum fluexs together when a merge happens.
-  int MAGS_N = MAGS_N_SNAPS* run_globals.MAGS_N_BANDS;
 
   double* inBCFluxTgt = target->inBCFlux;
   double* outBCFluxTgt = target->outBCFlux;
@@ -212,7 +194,6 @@ void init_templates_mini(mag_params_t* miniSpectra,
   static gsl_interp_accel* acc[N_FILTER];
   static gsl_spline* spline[N_FILTER];
   char fname[STRLEN], fullname[STRLEN];
-  int MAGS_N_BANDS = run_globals.MAGS_N_BANDS;
 
 #ifdef DEBUG
   mlog("#***********************************************************", MLOG_MESG);
@@ -307,8 +288,6 @@ void init_templates_mini(mag_params_t* miniSpectra,
     
     // Initialise filters
     init_filters(spectra + iS, betaBands, nBeta, restBands, nRest, obs_transmission_splined, obs_lambda_splined, obs_number, N_FILTER, redshifts[nAgeStep]);
-
-    miniSpectra->allcentreWaves[iS] = (double*)malloc(MAGS_N_BANDS * sizeof(double));
     for (iwave=0; iwave<MAGS_N_BANDS; iwave++){
         //mlog("iwave = %d: spectra.centreWave=%.1f",MLOG_MESG, iwave, spectra[iS].centreWaves[iwave]);
         miniSpectra->allcentreWaves[iS][iwave] = spectra[iS].centreWaves[iwave];
@@ -592,7 +571,11 @@ void init_magnitudes(void)
     for (int i_band = 0; i_band < n_rest; ++i_band)
       mlog("#\t%.1f to %.1f AA", MLOG_MESG, rest_bands[2 * i_band], rest_bands[2 * i_band + 1]);
 #endif
-	run_globals.MAGS_N_BANDS = n_beta + n_rest + N_FILTER;
+
+    if (n_beta + n_rest + N_FILTER!= MAGS_N_BANDS) {
+      mlog_error("Number of beta and rest-frame filters do not match MAGS_N_BANDS!", MLOG_MESG);
+      ABORT(EXIT_FAILURE);
+    }
     
     mlog("#***********************************************************\n\n", MLOG_MESG);
 
@@ -714,7 +697,7 @@ void get_output_magnitudesIII(float* mags, galaxy_t* gal, int snapshot)
   int* targetSnap = run_globals.mag_params.targetSnap;
   double* pInBCFlux = gal->inBCFluxIII;
   double* pOutBCFlux = gal->outBCFluxIII;
-  int MAGS_N_BANDS = run_globals.MAGS_N_BANDS;
+  int MAGS_N_BANDS = MAGS_N_BANDS;
 
   for (iS = 0; iS < MAGS_N_SNAPS; ++iS) {
     if (snapshot == targetSnap[iS])
@@ -750,7 +733,7 @@ void get_output_magnitudes(float* mags, float* dusty_mags, galaxy_t* gal, int sn
   int* targetSnap = run_globals.mag_params.targetSnap;
   double* pInBCFlux = gal->inBCFlux;
   double* pOutBCFlux = gal->outBCFlux;
-  int MAGS_N_BANDS = run_globals.MAGS_N_BANDS;
+  int MAGS_N_BANDS = MAGS_N_BANDS;
 
   for (iS = 0; iS < MAGS_N_SNAPS; ++iS) {
     if (snapshot == targetSnap[iS])
