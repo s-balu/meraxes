@@ -428,63 +428,56 @@ void read_trees__velociraptor_aug(int snapshot,
   char fname[STRLEN * 2 + 8];
   sprintf(fname, "%s/augmented_trees/%s", run_globals.params.SimulationDir, run_globals.params.CatalogFilePrefix);
 
-  hid_t fd = H5Fopen(fname, H5F_ACC_RDONLY, H5P_DEFAULT);
+  hid_t fd = H5Fopen(fname, H5F_ACC_RDONLY, plist_id);
+  //hid_t fd = H5Fopen(fname, H5F_ACC_RDONLY, H5P_DEFAULT);
   if (fd < 0) {
     mlog("Failed to open file %s", MLOG_MESG, fname);
     ABORT(EXIT_FAILURE);
   }
   H5Pclose(plist_id);
 
+  int mpi_size = run_globals.mpi_size;
+  int mpi_rank = run_globals.mpi_rank;
+
   char snap_group_name[9];
   sprintf(snap_group_name, "Snap_%03d", snapshot);
   hid_t snap_group = H5Gopen(fd, snap_group_name, H5P_DEFAULT);
 
-  if (run_globals.mpi_rank == 0) {
-    H5LTget_attribute_int(fd, snap_group_name, "NHalos", &n_tree_entries);
+  H5LTget_attribute_int(fd, snap_group_name, "NHalos", &n_tree_entries);
 
-    // check the units
-    H5LTget_attribute_double(fd, "Header/Units", "Mass_unit_to_solarmass", &mass_unit_to_internal);
-    mass_unit_to_internal /= 1.0e10;
-    H5LTget_attribute_double(fd, snap_group_name, "scalefactor", &scale_factor);
-  }
-
-  MPI_Bcast(&n_tree_entries, 1, MPI_INT, 0, run_globals.mpi_comm);
-  MPI_Bcast(&mass_unit_to_internal, 1, MPI_DOUBLE, 0, run_globals.mpi_comm);
-  MPI_Bcast(&scale_factor, 1, MPI_DOUBLE, 0, run_globals.mpi_comm);
-  MPI_Barrier(run_globals.mpi_comm);
+  // check the units
+  H5LTget_attribute_double(fd, "Header/Units", "Mass_unit_to_solarmass", &mass_unit_to_internal);
+  mass_unit_to_internal /= 1.0e10;
+  H5LTget_attribute_double(fd, snap_group_name, "scalefactor", &scale_factor);
 
   int buffer_size = (n_tree_entries > 100000) ? n_tree_entries / 10 : 10000;
   buffer_size = buffer_size > n_tree_entries ? n_tree_entries : buffer_size;
 
-  long* ForestID = malloc(sizeof(long) * buffer_size);
-  long* Head = malloc(sizeof(long) * buffer_size);
-  long* hostHaloID = malloc(sizeof(long) * buffer_size);
-  float* Mass_200crit = malloc(sizeof(float) * buffer_size);
-  float* Mass_tot = malloc(sizeof(float) * buffer_size);
-  float* R_200crit = malloc(sizeof(float) * buffer_size);
-  float* Vmax = malloc(sizeof(float) * buffer_size);
-  float* Xc = malloc(sizeof(float) * buffer_size);
-  float* Yc = malloc(sizeof(float) * buffer_size);
-  float* Zc = malloc(sizeof(float) * buffer_size);
-  float* VXc = malloc(sizeof(float) * buffer_size);
-  float* VYc = malloc(sizeof(float) * buffer_size);
-  float* VZc = malloc(sizeof(float) * buffer_size);
-  float* AngMom = malloc(sizeof(float) * buffer_size);
-  unsigned long* ID = malloc(sizeof(unsigned long) * buffer_size);
+  long* ForestID       = malloc(sizeof(long) * buffer_size);
+  long* Head           = malloc(sizeof(long) * buffer_size);
+  long* hostHaloID     = malloc(sizeof(long) * buffer_size);
+  float* Mass_200crit  = malloc(sizeof(float) * buffer_size);
+  float* Mass_tot      = malloc(sizeof(float) * buffer_size);
+  float* R_200crit     = malloc(sizeof(float) * buffer_size);
+  float* Vmax          = malloc(sizeof(float) * buffer_size);
+  float* Xc            = malloc(sizeof(float) * buffer_size);
+  float* Yc            = malloc(sizeof(float) * buffer_size);
+  float* Zc            = malloc(sizeof(float) * buffer_size);
+  float* VXc           = malloc(sizeof(float) * buffer_size);
+  float* VYc           = malloc(sizeof(float) * buffer_size);
+  float* VZc           = malloc(sizeof(float) * buffer_size);
+  float* AngMom        = malloc(sizeof(float) * buffer_size);
+  unsigned long* ID    = malloc(sizeof(unsigned long) * buffer_size);
   unsigned long* npart = malloc(sizeof(unsigned long) * buffer_size);
 
-  int mpi_size = run_globals.mpi_size;
-  int mpi_rank = run_globals.mpi_rank;
-
   plist_id = H5Pcreate(H5P_DATASET_XFER);
-  H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-  hid_t fspace_id = H5Screate_simple(1, (hsize_t[1]){ n_tree_entries }, NULL);
+  H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
 
-  double hubble_h = hubble_h;
+  double hubble_h = run_globals.params.Hubble_h;
   double box_size = run_globals.params.BoxSize;
 
   int n_read = 0;
-  int n_to_read = buffer_size > n_tree_entries ? n_tree_entries : buffer_size;
+  int n_to_read = buffer_size;
   while (n_read < n_tree_entries) {
     int n_remaining = n_tree_entries - n_read;
     if (n_remaining < n_to_read) {
@@ -492,39 +485,71 @@ void read_trees__velociraptor_aug(int snapshot,
     }
 
     // select a hyperslab in the filespace
+    hid_t fspace_id = H5Screate_simple(1, (hsize_t[1]){ n_tree_entries }, NULL);
     H5Sselect_hyperslab(fspace_id, H5S_SELECT_SET, (hsize_t[1]){ n_read }, NULL, (hsize_t[1]){ n_to_read }, NULL);
     hid_t memspace_id = H5Screate_simple(1, (hsize_t[1]){ n_to_read }, NULL);
 
-#define READ_TREE_ENTRY_PROP(name, type, h5type, mpi_type, i_r)                                                        \
+#define READ_TREE_ENTRY_PROP(name, type, h5type)                                                                       \
   {                                                                                                                    \
-	if (mpi_rank == i_r % mpi_size){                                                                                              \
-      hid_t dset_id = H5Dopen(snap_group, #name, H5P_DEFAULT);                                                         \
-      herr_t status = H5Dread(dset_id, h5type, memspace_id, fspace_id, H5P_DEFAULT, name);                             \
-      assert(status >= 0);                                                                                             \
-      H5Dclose(dset_id);                                                                                               \
-	}                                                                                                                  \
-	MPI_Bcast(name, n_to_read, mpi_type, mpi_rank, run_globals.mpi_comm);                                              \
-  }                                                                                                                    \
+    hid_t dset_id = H5Dopen(snap_group, #name, H5P_DEFAULT);                                                           \
+    herr_t status = H5Dread(dset_id, h5type, memspace_id, fspace_id, H5P_DEFAULT, name);                               \
+    assert(status >= 0);                                                                                               \
+    H5Dclose(dset_id);                                                                                                 \
+  }
 
-    READ_TREE_ENTRY_PROP(ForestID,     long, H5T_NATIVE_LONG, MPI_LONG, 0);
-    READ_TREE_ENTRY_PROP(Head,         long, H5T_NATIVE_LONG, MPI_LONG, 1);
-    READ_TREE_ENTRY_PROP(hostHaloID,   long, H5T_NATIVE_LONG, MPI_LONG, 2);
-    READ_TREE_ENTRY_PROP(Mass_200crit, float, H5T_NATIVE_FLOAT, MPI_FLOAT, 3);
-    READ_TREE_ENTRY_PROP(Mass_tot,     float, H5T_NATIVE_FLOAT, MPI_FLOAT, 4);
-    READ_TREE_ENTRY_PROP(R_200crit,    float, H5T_NATIVE_FLOAT, MPI_FLOAT, 5);
-    READ_TREE_ENTRY_PROP(Vmax,         float, H5T_NATIVE_FLOAT, MPI_FLOAT, 6);
-    READ_TREE_ENTRY_PROP(Xc,           float, H5T_NATIVE_FLOAT, MPI_FLOAT, 7);
-    READ_TREE_ENTRY_PROP(Yc,           float, H5T_NATIVE_FLOAT, MPI_FLOAT, 8);
-    READ_TREE_ENTRY_PROP(Zc,           float, H5T_NATIVE_FLOAT, MPI_FLOAT, 9);
-    READ_TREE_ENTRY_PROP(VXc,          float, H5T_NATIVE_FLOAT, MPI_FLOAT, 10);
-    READ_TREE_ENTRY_PROP(VYc,          float, H5T_NATIVE_FLOAT, MPI_FLOAT, 11);
-    READ_TREE_ENTRY_PROP(VZc,          float, H5T_NATIVE_FLOAT, MPI_FLOAT, 12);
-    READ_TREE_ENTRY_PROP(AngMom,       float, H5T_NATIVE_FLOAT, MPI_FLOAT, 13);
-    READ_TREE_ENTRY_PROP(ID,           unsigned long, H5T_NATIVE_ULONG, MPI_UNSIGNED_LONG, 14);
-    READ_TREE_ENTRY_PROP(npart,        unsigned long, H5T_NATIVE_ULONG, MPI_UNSIGNED_LONG, 15);
+	if (mpi_rank == 1 % mpi_size)
+      READ_TREE_ENTRY_PROP(ForestID,     long, H5T_NATIVE_LONG);
+	if (mpi_rank == 2 % mpi_size)
+      READ_TREE_ENTRY_PROP(Head,         long, H5T_NATIVE_LONG);
+	if (mpi_rank == 3 % mpi_size)
+      READ_TREE_ENTRY_PROP(hostHaloID,   long, H5T_NATIVE_LONG);
+	if (mpi_rank == 4 % mpi_size)
+      READ_TREE_ENTRY_PROP(Mass_200crit, float, H5T_NATIVE_FLOAT);
+	if (mpi_rank == 5 % mpi_size)
+      READ_TREE_ENTRY_PROP(Mass_tot,     float, H5T_NATIVE_FLOAT);
+	if (mpi_rank == 6 % mpi_size)
+      READ_TREE_ENTRY_PROP(R_200crit,    float, H5T_NATIVE_FLOAT);
+	if (mpi_rank == 7 % mpi_size)
+      READ_TREE_ENTRY_PROP(Vmax,         float, H5T_NATIVE_FLOAT);
+	if (mpi_rank == 8 % mpi_size)
+      READ_TREE_ENTRY_PROP(Xc,           float, H5T_NATIVE_FLOAT);
+	if (mpi_rank == 9 % mpi_size)
+      READ_TREE_ENTRY_PROP(Yc,           float, H5T_NATIVE_FLOAT);
+	if (mpi_rank == 10 % mpi_size)
+      READ_TREE_ENTRY_PROP(Zc,           float, H5T_NATIVE_FLOAT);
+	if (mpi_rank == 11 % mpi_size)
+      READ_TREE_ENTRY_PROP(VXc,          float, H5T_NATIVE_FLOAT);
+	if (mpi_rank == 12 % mpi_size)
+      READ_TREE_ENTRY_PROP(VYc,          float, H5T_NATIVE_FLOAT);
+	if (mpi_rank == 13 % mpi_size)
+      READ_TREE_ENTRY_PROP(VZc,          float, H5T_NATIVE_FLOAT);
+	if (mpi_rank == 14 % mpi_size)
+      READ_TREE_ENTRY_PROP(AngMom,       float, H5T_NATIVE_FLOAT);
+	if (mpi_rank == 15 % mpi_size)
+      READ_TREE_ENTRY_PROP(ID,           unsigned long, H5T_NATIVE_ULONG);
+	if (mpi_rank == 16 % mpi_size)
+      READ_TREE_ENTRY_PROP(npart,        unsigned long, H5T_NATIVE_ULONG);
 
     H5Sclose(memspace_id);
-    MPI_Barrier(run_globals.mpi_comm);
+    H5Sclose(fspace_id);
+
+	MPI_Barrier(run_globals.mpi_comm);
+	MPI_Bcast(ForestID,     sizeof(long) * n_to_read, MPI_BYTE, 1, run_globals.mpi_comm);
+	MPI_Bcast(Head,         sizeof(long) * n_to_read, MPI_BYTE, 2, run_globals.mpi_comm);
+	MPI_Bcast(hostHaloID,   sizeof(long) * n_to_read, MPI_BYTE, 3, run_globals.mpi_comm);
+	MPI_Bcast(Mass_200crit, sizeof(float) * n_to_read, MPI_BYTE, 4, run_globals.mpi_comm);
+	MPI_Bcast(Mass_tot,     sizeof(float) * n_to_read, MPI_BYTE, 5, run_globals.mpi_comm);
+	MPI_Bcast(R_200crit,    sizeof(float) * n_to_read, MPI_BYTE, 6, run_globals.mpi_comm);
+	MPI_Bcast(Vmax,         sizeof(float) * n_to_read, MPI_BYTE, 7, run_globals.mpi_comm);
+	MPI_Bcast(Xc,           sizeof(float) * n_to_read, MPI_BYTE, 8, run_globals.mpi_comm);
+	MPI_Bcast(Yc,           sizeof(float) * n_to_read, MPI_BYTE, 9, run_globals.mpi_comm);
+	MPI_Bcast(Zc,           sizeof(float) * n_to_read, MPI_BYTE, 10, run_globals.mpi_comm);
+	MPI_Bcast(VXc,          sizeof(float) * n_to_read, MPI_BYTE, 11, run_globals.mpi_comm);
+	MPI_Bcast(VYc,          sizeof(float) * n_to_read, MPI_BYTE, 12, run_globals.mpi_comm);
+	MPI_Bcast(VZc,          sizeof(float) * n_to_read, MPI_BYTE, 13, run_globals.mpi_comm);
+	MPI_Bcast(AngMom,       sizeof(float) * n_to_read, MPI_BYTE, 14, run_globals.mpi_comm);
+	MPI_Bcast(ID,           sizeof(unsigned long) * n_to_read, MPI_BYTE, 15, run_globals.mpi_comm);
+	MPI_Bcast(npart,        sizeof(unsigned long) * n_to_read, MPI_BYTE, 16, run_globals.mpi_comm);
 
     for (int ii = 0; ii < n_to_read; ++ii) {
       bool keep_this_halo = true;
@@ -590,11 +615,9 @@ void read_trees__velociraptor_aug(int snapshot,
           // seem to appear before their subhalos (checked below) in the
           // trees to immediately connect FOF group members.
           int host_index = id_to_ind(hostHaloID[ii]);
-		  mlog("hostHaloID = %d; host_index=%d", MLOG_MESG, hostHaloID[ii], host_index);
 
           if (index_lookup)
             host_index = find_original_index(host_index, index_lookup, *n_halos);
-		  mlog("find_original_index  host_index=%d", MLOG_MESG, host_index);
 
           assert(host_index > -1);
           assert(host_index < *n_halos);
@@ -651,7 +674,6 @@ void read_trees__velociraptor_aug(int snapshot,
   free(ID);
   free(npart);
   H5Pclose(plist_id);
-  H5Sclose(fspace_id);
   H5Gclose(snap_group);
   H5Fclose(fd);
 
